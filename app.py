@@ -1,6 +1,4 @@
 from flask import Flask, jsonify, request
-
-# Try to import necessary modules, and handle ImportErrors
 try:
     from imap_sync import fetch_and_index_emails
     from ai_categorization import categorize_email
@@ -16,7 +14,7 @@ except ImportError as e:
 
 app = Flask(__name__)
 
-# Route to sync emails via IMAP and index them in Elasticsearch
+
 @app.route('/sync-emails', methods=['GET'])
 def sync_emails():
     try:
@@ -24,22 +22,21 @@ def sync_emails():
         password = request.args.get('password')
         imap_server = request.args.get('imap_server')
         
-        # Check if required arguments are provided
+        
         if not username or not password or not imap_server:
             return jsonify({"error": "Missing required parameters"}), 400
 
-        # Check if the function is available
+
         if fetch_and_index_emails is None:
             return jsonify({"error": "fetch_and_index_emails function is not available"}), 500
 
-        # Fetch and index emails
+        
         emails = fetch_and_index_emails(username, password, imap_server)
         return jsonify(emails), 200
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-# Route for AI-based email categorization
 @app.route('/categorize-email', methods=['POST'])
 def categorize():
     try:
@@ -47,18 +44,18 @@ def categorize():
         if not email_body:
             return jsonify({"error": "Email body is missing"}), 400
 
-        # Check if the function is available
+        
         if categorize_email is None:
             return jsonify({"error": "categorize_email function is not available"}), 500
 
-        # Categorize email
+        
         category = categorize_email(email_body)
         return jsonify({"category": category}), 200
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-# Route to send Slack notification
+
 @app.route('/slack-notify', methods=['POST'])
 def slack_notify():
     try:
@@ -66,22 +63,22 @@ def slack_notify():
         slack_token = request.json.get('slack_token')
         slack_channel = request.json.get('slack_channel')
         
-        # Check if required arguments are provided
+        
         if not subject or not slack_token or not slack_channel:
             return jsonify({"error": "Missing required parameters"}), 400
 
-        # Check if the function is available
+        
         if send_slack_notification is None:
             return jsonify({"error": "send_slack_notification function is not available"}), 500
 
-        # Send Slack notification
+        
         send_slack_notification(subject, slack_token, slack_channel)
         return jsonify({"status": "Notification sent"}), 200
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-# Route to trigger a webhook
+
 @app.route('/trigger-webhook', methods=['POST'])
 def trigger():
     try:
@@ -89,18 +86,18 @@ def trigger():
         if not email_data:
             return jsonify({"error": "Email data is missing"}), 400
 
-        # Check if the function is available
+        
         if trigger_webhook is None:
             return jsonify({"error": "trigger_webhook function is not available"}), 500
 
-        # Trigger webhook
+        
         trigger_webhook(email_data)
         return jsonify({"status": "Webhook triggered"}), 200
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-# Route to search emails in Elasticsearch
+
 @app.route('/search-emails', methods=['GET'])
 def search():
     try:
@@ -108,11 +105,11 @@ def search():
         if not query:
             return jsonify({"error": "Search query is missing"}), 400
 
-        # Check if the function is available
+
         if search_emails is None:
             return jsonify({"error": "search_emails function is not available"}), 500
 
-        # Search emails using Elasticsearch
+        
         results = search_emails(query)
         return jsonify(results), 200
 
