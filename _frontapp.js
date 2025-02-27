@@ -6,17 +6,16 @@ import EmailFilter from './components/EmailFilter';
 function App() {
   const [emails, setEmails] = useState([]);
 
-  // Function to sync emails from the backend API
   const syncEmails = async () => {
     try {
       const response = await axios.get('/sync-emails', {
         params: {
-          username: 'user@example.com',  // Replace with real credentials
+          username: 'user@example.com',  
           password: 'password123',
           imap_server: 'imap.gmail.com'
         }
       });
-      setEmails(response.data);  // Update the state with fetched emails
+      setEmails(response.data);  
     } catch (error) {
       console.error('Error syncing emails:', error);
     }
